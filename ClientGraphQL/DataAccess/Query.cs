@@ -12,7 +12,7 @@ namespace ClientGraphQL.DataAccess
         private static GraphQLHttpClient graphQLHttpClient;
         static Query()
         {
-            var uri = new Uri("http://localhost:5000/graphql");
+            var uri = new Uri("http://localhost:5000/graphgl/");
             var graphQLOptions = new GraphQLHttpClientOptions
             {
                 EndPoint=uri,
@@ -40,7 +40,7 @@ namespace ClientGraphQL.DataAccess
             }
             catch(Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         public static async Task<T> ExecuteQueryAsync<T>(string graphQLQueryType,

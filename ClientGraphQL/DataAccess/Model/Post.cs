@@ -1,17 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ClientGraphQL.DataAcess.Model;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ExampleGraphQL.Models
+namespace ClientGraphQL.DataAccess.Model
 {
     public class Post
     {
         public Guid Id { get; set; }
-       
+        [Required(ErrorMessage ="Title is required")]
         public string? Title { get; set; }
-       
+        [Required(ErrorMessage = "Content is required")]
         public string? Content { get; set; }
       
         public DateTime? CreateAt { get; set; }
+        [Required(ErrorMessage = "Author is required")]
         public string? Author { get; set; }
         public ICollection<Comment> Comments { get; set; }
 
