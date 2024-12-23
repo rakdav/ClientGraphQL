@@ -6,7 +6,7 @@ namespace ClientGraphQL.DataAccess.Model
 {
     public class Post
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         [Required(ErrorMessage ="Title is required")]
         public string? Title { get; set; }
         [Required(ErrorMessage = "Content is required")]
