@@ -21,8 +21,7 @@ else
             @foreach (var post in AllPosts)
             {
                 <tr>
-                    <td></td>
-                    <td>@post.Title</td>
+                    <td><a href="/ViewPost/@post.Id">@post.Title</a></td>
                     <td>@post.Author</td>
                     <td>@post.Content</td>
                 </tr>
@@ -37,7 +36,7 @@ else
     {
         try
         {
-            string query = "query{posts{title,author,content,createAt}}";
+            string query = "query{posts{title,author,content,createAt,id}}";
             string queryType = "posts";
             var result = await Query.
             ExecuteQueryReturnListAsync<Post>(queryType,query);

@@ -1,4 +1,5 @@
-﻿using GraphQL;
+﻿using ClientGraphQL.DataAccess.Model;
+using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using ModernHttpClient;
@@ -16,6 +17,7 @@ namespace ClientGraphQL.DataAccess
             {
                 EndPoint = uri,
                 HttpMessageHandler = new NativeMessageHandler(),
+                //IsValidResponseToDeserialize=res=>res.IsSuccessStatusCode
             };
             graphQLHttpClient = new GraphQLHttpClient(graphQLOptions,
                 new NewtonsoftJsonSerializer());
@@ -39,7 +41,7 @@ namespace ClientGraphQL.DataAccess
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

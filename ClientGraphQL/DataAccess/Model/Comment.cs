@@ -7,14 +7,12 @@ namespace ClientGraphQL.DataAcess.Model
 {
     public class Comment
     {
-        public long Id { get; set; }
-        [Required(ErrorMessage = "Content is required")]
+        public int Id { get; set; }
         public string? Content { get; set; }
         public DateTime CreatedAt { get; set; }
-        [Required(ErrorMessage = "Author is required")]
         public string? Author { get; set; }
         [Required]
-        public Guid PostId { get; set; }
+        public int PostId { get; set; }
         public Post? Post { get; set; }
 
         public override string? ToString()
