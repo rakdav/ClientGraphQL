@@ -12,7 +12,7 @@ namespace ClientGraphQL.DataAccess
         private static GraphQLHttpClient graphQLHttpClient;
         static Mutation()
         {
-            var uri = new Uri("http://localhost:5000/graphgl");
+            var uri = new Uri("http://localhost:5000/graphgl/");
             var graphQLOptions = new GraphQLHttpClientOptions
             {
                 EndPoint = uri,
@@ -62,7 +62,7 @@ namespace ClientGraphQL.DataAccess
             };
             try
             {
-                var response = await graphQLHttpClient.SendMutationAsync<CreatePostReturnModel>(query);
+                var response = await graphQLHttpClient.SendQueryAsync<CreatePostReturnModel>(query);
                 return response.Data;
             }
             catch(Exception ex)
