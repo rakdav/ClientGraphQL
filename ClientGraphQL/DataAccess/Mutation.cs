@@ -12,17 +12,16 @@ namespace ClientGraphQL.DataAccess
         private static GraphQLHttpClient graphQLHttpClient;
         static Mutation()
         {
-            var uri = new Uri("http://localhost:5000/graphql");
+            var uri = new Uri("http://localhost:5000/graphgl");
             var graphQLOptions = new GraphQLHttpClientOptions
             {
                 EndPoint = uri,
-                HttpMessageHandler = new NativeMessageHandler(),
-                //IsValidResponseToDeserialize=res=>res.IsSuccessStatusCode
+                HttpMessageHandler = new NativeMessageHandler()
             };
             graphQLHttpClient = new GraphQLHttpClient(graphQLOptions,
                 new NewtonsoftJsonSerializer());
         }
-        public static async Task<T> ExecuteMutationAsync<T>(string graphQLQueryType,
+        public static async Task<CreatePostReturnModel> ExecuteMutationAsync(string graphQLQueryType,
           string completeQueryString)
         {
             try
@@ -31,15 +30,42 @@ namespace ClientGraphQL.DataAccess
                 {
                     Query = completeQueryString
                 };
-                var response = await graphQLHttpClient.SendMutationAsync<object>(request);
+                var response = await graphQLHttpClient.SendMutationAsync<CreatePostReturnModel>(request);
                 var stringResult = response.Data.ToString();
                 stringResult = stringResult!.Replace($"\"{graphQLQueryType}\":", string.Empty);
                 stringResult = stringResult.Remove(0, 1);
                 stringResult = stringResult.Remove(stringResult.Length - 1, 1);
-                var result = JsonConvert.DeserializeObject<T>(stringResult);
+                var result = JsonConvert.DeserializeObject<CreatePostReturnModel>(stringResult);
                 return result!;
             }
             catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static async Task<CreatePostReturnModel> CreatePost(CreatePostModel model)
+        {
+            var query = new GraphQLRequest
+            {
+                Query = @"mutation($a:String,$c:String,$t:String){
+                            createPost(author:$a,content:$c,title:$t )
+                            {
+                            id,title,content,createAt,author
+                            }
+                        }",
+                Variables =new
+                {
+                    a=model.Author,
+                    c=model.Content,
+                    t=model.Title
+                }
+            };
+            try
+            {
+                var response = await graphQLHttpClient.SendMutationAsync<CreatePostReturnModel>(query);
+                return response.Data;
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }
