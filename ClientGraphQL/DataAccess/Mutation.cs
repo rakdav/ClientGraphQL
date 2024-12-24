@@ -43,32 +43,5 @@ namespace ClientGraphQL.DataAccess
                 throw ex;
             }
         }
-        public static async Task<CreatePostReturnModel> CreatePost(CreatePostModel model)
-        {
-            var query = new GraphQLRequest
-            {
-                Query = @"mutation($a:String,$c:String,$t:String){
-                            createPost(author:$a,content:$c,title:$t )
-                            {
-                            id,title,content,createAt,author
-                            }
-                        }",
-                Variables =new
-                {
-                    a=model.Author,
-                    c=model.Content,
-                    t=model.Title
-                }
-            };
-            try
-            {
-                var response = await graphQLHttpClient.SendQueryAsync<CreatePostReturnModel>(query);
-                return response.Data;
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
     }
 }
