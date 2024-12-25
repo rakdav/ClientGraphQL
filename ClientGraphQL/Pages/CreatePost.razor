@@ -28,7 +28,7 @@
         {
             string query = $"mutation{{createPost(author: \"{createPostModel.Author}\",content: \"{createPostModel.Content}\",title: \"{createPostModel.Title}\"){{id,title,content,author,createAt}}}}";
             string querytype = "createPost";
-            var result = await Mutation.CreatePost(createPostModel);
+            var result = await Query.ExecuteQueryAsync<CreatePostReturnModel>(querytype,query);
             createPostReturnModel = result;
             NavigationManager.NavigateTo($"ViewPost/{createPostReturnModel.Id}");
         }

@@ -36,10 +36,10 @@
     {
         try
         {
-            string query = $"mutation{{updatePost(model: {{author: \"{post.Author}\",content: \"{post.Content}\",title: \"{post.Title}\",id:{Id},createAt:\"{DateTime.Now}\"}}){{id,title,content,author,createAt}}}}";
+            string query = $"mutation{{updatePost(model: {{author: \"{post.Author}\",content: \"{post.Content}\",title: \"{post.Title}\",id:{Id}}}){{id,title,content,author,createAt}}}}";
             string querytype = "updatePost";
             var result = await Query.ExecuteQueryAsync<Post>(querytype, query);
-            if (result == null)
+            if (result != null)
             {
                 NavigationManager.NavigateTo($"PostView");
             }
