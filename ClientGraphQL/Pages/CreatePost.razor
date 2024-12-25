@@ -1,0 +1,40 @@
+﻿@page "/CreatePost"
+@using ClientGraphQL.DataAccess;
+@using ClientGraphQL.DataAccess.Model;
+@inject NavigationManager NavigationManager
+<h1>Create a post</h1>
+<div class="row">
+    <EditForm Model="@createPostModel" OnValidSubmit="@CreateButtonClick">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            Title: <InputText id="title" @bind-Value="createPostModel.Title" class="form-control" />
+        </div>
+        <div class="form-group">
+            Content: <InputText id="content" @bind-Value="createPostModel.Content" class="form-control" />
+        </div>
+        <div class="form-group">
+            Author: <InputText id="author" @bind-Value="createPostModel.Author" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Create</button>
+    </EditForm>
+</div>
+<a href="/PostView">Back to List</a>
+@code {
+    private CreatePostReturnModel createPostReturnModel = new CreatePostReturnModel();
+    private CreatePostModel createPostModel = new CreatePostModel();
+    private async Task CreateButtonClick(){
+        try
+        {
+            string query = $"mutation{{createPost(author: \"{createPostModel.Author}\",content: \"{createPostModel.Content}\",title: \"{createPostModel.Title}\"){{id,title,content,author,createAt}}}}";
+            string querytype = "createPost";
+            var result = await Mutation.CreatePost(createPostModel);
+            createPostReturnModel = result;
+            NavigationManager.NavigateTo($"ViewPost/{createPostReturnModel.Id}");
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+    }
+}

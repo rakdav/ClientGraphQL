@@ -1,0 +1,53 @@
+﻿@page "/EditPost/{Id:int}"
+
+@using ClientGraphQL.DataAccess;
+@using ClientGraphQL.DataAccess.Model;
+@inject NavigationManager NavigationManager
+<h3>EditPost</h3>
+<div class="row">
+    <EditForm Model="@post" OnValidSubmit="@EditButtonClick">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+        Title: <InputText id="title" @bind-Value="post.Title" class="form-control" />
+        </div>
+        <div class="form-group">
+        Content: <InputText id="content" @bind-Value="post.Content" class="form-control" />
+        </div>
+        <div class="form-group">
+        Author: <InputText id="author" @bind-Value="post.Author" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Save</button>
+    </EditForm>
+</div>
+<a href="/PostView">Back to List</a>
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    private Post post = new Post();
+    protected override async Task OnInitializedAsync()
+    {
+        string query = $"query{{postById(id: {Id}){{title,content,createAt,author}}}}";
+        string graphQLQueryType = "postById";
+        var result = await Query.ExecuteQueryAsync<Post>(graphQLQueryType, query);
+        post = result;
+    }
+    private async Task EditButtonClick()
+    {
+        try
+        {
+            string query = $"mutation{{updatePost(model: {{author: \"{post.Author}\",content: \"{post.Content}\",title: \"{post.Title}\",id:{Id},createAt:\"{DateTime.Now}\"}}){{id,title,content,author,createAt}}}}";
+            string querytype = "updatePost";
+            var result = await Query.ExecuteQueryAsync<Post>(querytype, query);
+            if (result == null)
+            {
+                NavigationManager.NavigateTo($"PostView");
+            }
+            post = result;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+}

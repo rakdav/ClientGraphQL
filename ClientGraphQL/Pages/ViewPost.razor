@@ -1,0 +1,42 @@
+﻿@page "/ViewPost/{Id:long}"
+
+@using ClientGraphQL.DataAccess;
+@using ClientGraphQL.DataAccess.Model;
+@inject NavigationManager NavigationManager
+
+@if(post==null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h2>@post.Title Details</h2>
+    <div>
+        <div>
+            Title:<span style="font-size:large">@post.Title</span>
+        </div>
+        <div>
+            Title:<span style="font-size:large">@post.Content</span>
+        </div>
+        <div>
+            Title:<span style="font-size:large">@post.Author</span>
+        </div>
+    </div>
+}
+<a href="/PostView">Back to List</a>
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private Post post = new Post();
+    protected override async Task OnInitializedAsync()
+    {
+        string query = $"query{{postById(id: {Id}){{title,content,createAt,author}}}}";
+        string graphQLQueryType = "postById";
+        var result = await Query.ExecuteQueryAsync<Post>(graphQLQueryType, query);
+        if(result==null){
+            NavigationManager.NavigateTo($"PostView");
+        }
+        post = result;
+    }
+}

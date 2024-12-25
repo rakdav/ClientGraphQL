@@ -1,0 +1,65 @@
+﻿@page "/PostView"
+@using ClientGraphQL.DataAccess
+@using ClientGraphQL.DataAccess.Model;
+@inject NavigationManager NavigationManager;
+<h1>All posts</h1>
+<a href="/CreatePost">Create post</a>
+@if(AllPosts.Count==0){
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Content</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in AllPosts)
+            {
+                <tr>
+                    <td><a href="/ViewPost/@post.Id">@post.Title</a></td>
+                    <td>@post.Author</td>
+                    <td>@post.Content</td>
+                    <td>
+                        <a class="btn btn-primary" href="/EditPost/@post.Id">Изменить</a>
+                        <a class="btn btn-primary" @onclick="@(async ()=>await Delete(post.Id))">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private List<Post> AllPosts = new List<Post>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+    private async Task Delete(int? id)
+    {
+        string query = @"mutation{deletePost(id:"+id+")}";
+        string queryType = "deletePost";
+        await Query.ExecuteQueryAsync<bool>(queryType, query);
+        await Load();
+    }
+    private async Task Load()
+    {
+        try
+        {
+            string query = "query{posts{title,author,content,createAt,id}}";
+            string queryType = "posts";
+            var result = await Query.
+            ExecuteQueryReturnListAsync<Post>(queryType, query);
+            AllPosts = result;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+}
